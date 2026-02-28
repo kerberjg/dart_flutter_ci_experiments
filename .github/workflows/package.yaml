@@ -1,0 +1,94 @@
+name: "package"
+
+on:
+  schedule:
+    - cron: "0 12 * * 3"
+  pull_request:
+  push:
+    branches:
+      - main
+      - develop
+      - "release/**"
+    paths:
+      - "**.dart"
+      - "./*.yaml"
+      - .github/workflows/_base*.yaml
+      - .github/workflows/package.yaml
+  release:
+    types: [published]
+
+# call the base workflow with the package path
+jobs:
+  detect-sdk:
+    strategy:
+      matrix:
+        package:
+          - dart_package_template
+          - flutter_package
+          - flutter_app
+    uses: ./.github/workflows/_base-flutter.yaml
+    with:
+      path: "packages/${{ matrix.package }}"
+
+  force-sdk-flutter:
+    strategy:
+      matrix:
+        package:
+          - flutter_package
+          - flutter_app
+    uses: ./.github/workflows/_base-flutter.yaml
+    with:
+      path: "packages/${{ matrix.package }}"
+      force-sdk: "flutter"
+
+  force-sdk-dart:
+    strategy:
+      matrix:
+        package:
+          - dart_package_template
+    uses: ./.github/workflows/_base-flutter.yaml
+    with:
+      path: "packages/${{ matrix.package }}"
+      force-sdk: "dart"
+
+  branch-sdk-flutter:
+    strategy:
+      matrix:
+        package:
+          - flutter_package
+          - flutter_app
+    uses: ./.github/workflows/_base-flutter.yaml
+    with:
+      path: "packages/${{ matrix.package }}"
+      sdk-branch: "beta"
+
+  branch-sdk-dart:
+    strategy:
+      matrix:
+        package:
+          - dart_package_template
+    uses: ./.github/workflows/_base-flutter.yaml
+    with:
+      path: "packages/${{ matrix.package }}"
+      sdk-branch: "beta"
+
+  version-sdk-flutter:
+    strategy:
+      matrix:
+        package:
+          - flutter_package
+          - flutter_app
+    uses: ./.github/workflows/_base-flutter.yaml
+    with:
+      path: "packages/${{ matrix.package }}"
+      sdk-version: "3.38.5"
+
+  version-sdk-dart:
+    strategy:
+      matrix:
+        package:
+          - dart_package_template
+    uses: ./.github/workflows/_base-flutter.yaml
+    with:
+      path: "packages/${{ matrix.package }}"
+      sdk-version: "3.10.1"

@@ -1,0 +1,215 @@
+name: "[base] Flutter"
+
+on:
+  workflow_call:
+    inputs:
+      path:
+        required: false
+        type: string
+        default: "."
+      sdk-branch:
+        required: false
+        type: string
+        default: "stable"
+      sdk-version:
+        required: false
+        type: string
+      force-sdk:
+        required: false
+        type: string
+        description: "Override detected SDK (flutter/dart) with this value, for testing purposes. Must be 'flutter' or 'dart'."
+
+jobs:
+  checks:
+    name: "checks"
+    runs-on: ubuntu-latest
+    outputs:
+      sdk: ${{ steps.check-sdk.outputs.sdk }}
+      do_tests: ${{ steps.check-tests.outputs.do_tests }}
+      do_codegen: ${{ steps.check-codegen.outputs.do_codegen }}
+      do_publish: ${{ steps.check-publish.outputs.do_publish }}
+    steps:
+      - uses: actions/checkout@v5
+      # Check whether to use flutter/dart CLI
+      - id: check-sdk
+        run: |
+          if [ -n "${{ inputs.force-sdk }}" ]; then
+            echo "Forcing SDK to ${{ inputs.force-sdk }}.";
+            sdk=${{ inputs.force-sdk }}
+          elif [ -f "${{ inputs.path }}/pubspec.yaml" ] && grep -q "flutter:" "${{ inputs.path }}/pubspec.yaml"; then
+            echo "Flutter SDK detected.";
+            sdk=flutter
+          else
+            echo "Flutter SDK not detected.";
+            sdk=dart
+          fi
+          echo "sdk=$sdk" >> $GITHUB_OUTPUT
+      # Skip if no test directory
+      - id: check-tests
+        run: |
+          if [ ! -d "${{ inputs.path }}/test" ]; then
+            echo "No test directory found, skipping tests.";
+            do_tests=0
+          else
+            echo "Test directory found, will run tests.";
+            do_tests=1
+          fi
+          echo "do_tests=$do_tests" >> $GITHUB_OUTPUT
+      # Skip if no build_runner dependency
+      - id: check-codegen
+        run: |
+          if [ -f "${{ inputs.path }}/pubspec.yaml" ] && grep -q "build_runner:" "${{ inputs.path }}/pubspec.yaml"; then
+            echo "build_runner dependency found, will run codegen.";
+            do_codegen=1
+          else
+            echo "No build_runner dependency found, skipping codegen.";
+            do_codegen=0
+          fi
+          echo "do_codegen=$do_codegen" >> $GITHUB_OUTPUT
+      # Skip if `publish_to` is set to `none`
+      - id: check-publish
+        run: |
+          # accept both `publish_to: none`, `publish_to: 'none'`, and `publish_to: "none"`
+          if [ -f "${{ inputs.path }}/pubspec.yaml" ] && grep -Eq "publish_to:[[:space:]]*(['\"])?none\1" "${{ inputs.path }}/pubspec.yaml"; then
+            echo "Skipping publish step.";
+            do_publish=0
+          else
+            echo "Running publish step.";
+            do_publish=1
+          fi
+          echo "do_publish=$do_publish" >> $GITHUB_OUTPUT
+
+  install:
+    name: "install"
+    runs-on: ubuntu-latest
+    needs: [checks]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        if: needs.checks.outputs.sdk == 'flutter'
+        with:
+          channel: ${{ inputs.sdk-version && 'any' || inputs.sdk-branch }}
+          flutter-version: ${{ inputs.sdk-version }}
+          cache: true
+
+      - uses: dart-lang/setup-dart@v1
+        if: needs.checks.outputs.sdk == 'dart'
+        with:
+          sdk: ${{ inputs.sdk-version || inputs.sdk-branch }}
+
+      - name: "Get dependencies"
+        run: ${{ needs.checks.outputs.sdk }} pub get
+        working-directory: ${{ inputs.path }}
+
+  format:
+    name: "format"
+    runs-on: ubuntu-latest
+    needs: [install, checks]
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        if: needs.checks.outputs.sdk == 'flutter'
+        with:
+          channel: ${{ inputs.sdk-version && 'any' || inputs.sdk-branch }}
+          flutter-version: ${{ inputs.sdk-version }}
+          cache: true
+
+      - uses: dart-lang/setup-dart@v1
+        if: needs.checks.outputs.sdk == 'dart'
+        with:
+          sdk: ${{ inputs.sdk-version || inputs.sdk-branch }}
+
+      - name: "Get dependencies"
+        run: ${{ needs.checks.outputs.sdk }} pub get
+        working-directory: ${{ inputs.path }}
+
+      - name: "dart format"
+        run: |
+          echo "Checking Dart formatting...\nFiles displayed below:"
+          dart format -o none --set-exit-if-changed ./lib/
+          if [ ${{ needs.checks.outputs.do_tests }} -eq 1 ]; then dart format -o none --set-exit-if-changed ./test/; fi
+          echo "No formatting issues found."
+        working-directory: ${{ inputs.path }}
+
+  analyze:
+    name: "analyze"
+    runs-on: ubuntu-latest
+    needs: [install, checks]
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        if: needs.checks.outputs.sdk == 'flutter'
+        with:
+          channel: ${{ inputs.sdk-version && 'any' || inputs.sdk-branch }}
+          flutter-version: ${{ inputs.sdk-version }}
+          cache: true
+
+      - uses: dart-lang/setup-dart@v1
+        if: needs.checks.outputs.sdk == 'dart'
+        with:
+          sdk: ${{ inputs.sdk-version || inputs.sdk-branch }}
+
+      - name: "Get dependencies"
+        run: ${{ needs.checks.outputs.sdk }} pub get
+        working-directory: ${{ inputs.path }}
+
+      - name: Run analysis
+        run: ${{ needs.checks.outputs.sdk }} analyze --fatal-warnings ./lib/
+        working-directory: ${{ inputs.path }}
+
+  test:
+    runs-on: ubuntu-latest
+    needs: [install, checks]
+    if: needs.checks.outputs.do_tests == 1
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        if: needs.checks.outputs.sdk == 'flutter'
+        with:
+          channel: ${{ inputs.sdk-version && 'any' || inputs.sdk-branch }}
+          flutter-version: ${{ inputs.sdk-version }}
+          cache: true
+
+      - uses: dart-lang/setup-dart@v1
+        if: needs.checks.outputs.sdk == 'dart'
+        with:
+          sdk: ${{ inputs.sdk-version || inputs.sdk-branch }}
+
+      - name: "Get dependencies"
+        run: ${{ needs.checks.outputs.sdk }} pub get
+        working-directory: ${{ inputs.path }}
+
+      - name: Run tests
+        run: ${{ needs.checks.outputs.sdk }} test --reporter=expanded test/*.dart
+        working-directory: ${{ inputs.path }}
+
+  publish-dry-run:
+    runs-on: ubuntu-latest
+    # Needs dart or flutter job to complete successfully, only skipped if either is failed, but not skipped
+    needs: [checks, test, analyze, format]
+    if: ${{ needs.checks.outputs.do_publish == 1 }}
+    # if: ${{ needs.checks.outputs.do_publish == 1 && (github.event_name == 'release' && github.event.action == 'published' || github.ref == 'refs/heads/main') }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        if: needs.checks.outputs.sdk == 'flutter'
+        with:
+          channel: ${{ inputs.sdk-version && 'any' || inputs.sdk-branch }}
+          flutter-version: ${{ inputs.sdk-version }}
+          cache: true
+
+      - uses: dart-lang/setup-dart@v1
+        if: needs.checks.outputs.sdk == 'dart'
+        with:
+          sdk: ${{ inputs.sdk-version || inputs.sdk-branch }}
+
+      - name: "Get dependencies"
+        run: ${{ needs.checks.outputs.sdk }} pub get
+        working-directory: ${{ inputs.path }}
+
+      - name: Publish to pub.dev (dry run)
+        run: ${{ needs.checks.outputs.sdk }} pub publish --dry-run
+        working-directory: ${{ inputs.path }}

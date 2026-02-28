@@ -1,10 +1,10 @@
 name: flutter_package
 description: "A new Flutter package project."
 version: 0.0.1
-homepage:
+repository: https://github.com/kerberjg/dart_flutter_ci_experiments
 
 environment:
-  sdk: ^3.11.0
+  sdk: ^3.10.0
   flutter: ">=1.17.0"
 
 dependencies:
