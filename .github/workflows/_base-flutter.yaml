@@ -70,7 +70,7 @@ jobs:
       - id: check-publish
         run: |
           # accept both `publish_to: none`, `publish_to: 'none'`, and `publish_to: "none"`
-          if [ -f "${{ inputs.path }}/pubspec.yaml" ] && grep -Eq "publish_to:[[:space:]]*(['\"])?none\1" "${{ inputs.path }}/pubspec.yaml"; then
+          if [ -f "${{ inputs.path }}/pubspec.yaml" ] && grep -Eq "publish_to:[[:space:]]?(['\"]?)none\1[\n]" "${{ inputs.path }}/pubspec.yaml"; then
             echo "Skipping publish step.";
             do_publish=0
           else
@@ -127,7 +127,8 @@ jobs:
       - name: "dart format"
         run: |
           echo "Checking Dart formatting...\nFiles displayed below:"
-          dart format -o none --set-exit-if-changed ./lib/
+          dart format -o none --set-exit-if-changed ./lib/**.dart
+          dart format -o none --set-exit-if-changed ./bin/**.dart
           if [ ${{ needs.checks.outputs.do_tests }} -eq 1 ]; then dart format -o none --set-exit-if-changed ./test/; fi
           echo "No formatting issues found."
         working-directory: ${{ inputs.path }}
@@ -156,7 +157,9 @@ jobs:
         working-directory: ${{ inputs.path }}
 
       - name: Run analysis
-        run: ${{ needs.checks.outputs.sdk }} analyze --fatal-warnings ./lib/
+        run: |
+          - if [ -d "./lib" ]; then ${{ needs.checks.outputs.sdk }} analyze --fatal-warnings ./lib/**.dart; else ${{ needs.checks.outputs.sdk }} analyze --fatal-warnings .; fi
+          - if [ -d "./bin" ]; then ${{ needs.checks.outputs.sdk }} analyze --fatal-warnings ./bin/**.dart; else ${{ needs.checks.outputs.sdk }} analyze --fatal-warnings .; fi
         working-directory: ${{ inputs.path }}
 
   test:
