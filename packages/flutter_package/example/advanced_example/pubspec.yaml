@@ -1,0 +1,23 @@
+name: package_advanced_example
+description: A secondary example project for flutter_package, demonstrating user interaction.
+version: 0.0.1
+
+publish_to: none
+
+environment:
+  sdk: ^3.10.0
+  flutter: ">=1.17.0"
+
+dependencies:
+  auto_layout_frame: ^0.1.1
+  flutter:
+    sdk: flutter
+  flutter_package:
+    path: ../../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
