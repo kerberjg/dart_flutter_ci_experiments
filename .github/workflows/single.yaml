@@ -1,4 +1,4 @@
-name: "package"
+name: "single"
 
 on:
   schedule:
@@ -13,76 +13,47 @@ on:
       - "**.dart"
       - "./*.yaml"
       - .github/workflows/_base*.yaml
-      - .github/workflows/package.yaml
+      - .github/workflows/single.yaml
 
 # call the base workflow with the package path
 jobs:
   detect-sdk:
-    strategy:
-      matrix:
-        package:
-          - dart_package_template
-          - flutter_package
     uses: ./.github/workflows/_base-flutter.yaml
     with:
-      path: "packages/${{ matrix.package }}"
+      path: "packages/dart_package_template"
 
   force-sdk-flutter:
-    strategy:
-      matrix:
-        package:
-          - flutter_package
     uses: ./.github/workflows/_base-flutter.yaml
     with:
-      path: "packages/${{ matrix.package }}"
+      path: "packages/flutter_package"
       force-sdk: "flutter"
 
   force-sdk-dart:
-    strategy:
-      matrix:
-        package:
-          - dart_package_template
     uses: ./.github/workflows/_base-flutter.yaml
     with:
-      path: "packages/${{ matrix.package }}"
+      path: "packages/dart_package_template"
       force-sdk: "dart"
 
   branch-sdk-flutter:
-    strategy:
-      matrix:
-        package:
-          - flutter_package
     uses: ./.github/workflows/_base-flutter.yaml
     with:
-      path: "packages/${{ matrix.package }}"
+      path: "packages/flutter_package"
       sdk-branch: "beta"
 
   branch-sdk-dart:
-    strategy:
-      matrix:
-        package:
-          - dart_package_template
     uses: ./.github/workflows/_base-flutter.yaml
     with:
-      path: "packages/${{ matrix.package }}"
+      path: "packages/dart_package_template"
       sdk-branch: "beta"
 
   version-sdk-flutter:
-    strategy:
-      matrix:
-        package:
-          - flutter_package
     uses: ./.github/workflows/_base-flutter.yaml
     with:
-      path: "packages/${{ matrix.package }}"
+      path: "packages/flutter_package"
       sdk-version: "3.38.5"
 
   version-sdk-dart:
-    strategy:
-      matrix:
-        package:
-          - dart_package_template
     uses: ./.github/workflows/_base-flutter.yaml
     with:
-      path: "packages/${{ matrix.package }}"
+      path: "packages/dart_package_template"
       sdk-version: "3.10.1"

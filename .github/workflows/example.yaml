@@ -1,44 +1,96 @@
 name: "example"
 
 on:
+  schedule:
+    - cron: "0 12 * * 3"
   pull_request:
   push:
     branches:
       - main
       - develop
-      - 'release/**'
+      - "release/**"
     paths:
-      - 'example/**/*.dart'
-      - 'example/**/*.yaml'
+      - "**.dart"
+      - "./*.yaml"
       - .github/workflows/_base*.yaml
       - .github/workflows/example.yaml
-  release:
-    types: [published]
 
+# call the base workflow with the package path
 jobs:
-  is-flutter:
-    uses: ./.github/workflows/_base-has_flutter.yaml
-    with:
-      path: '.'
-
-  dart:
-    needs: is-flutter
-    if: needs.is-flutter.outputs.is_flutter == '0'
+  detect-sdk:
     strategy:
       matrix:
-        example: [ editor ]
-    name: "${{ matrix.example }}"
-    uses: ./.github/workflows/_base-dart.yaml
-    with:
-      path: "example/${{ matrix.example }}"
-
-  flutter:
-    needs: is-flutter
-    if: needs.is-flutter.outputs.is_flutter == '1'
-    strategy:
-      matrix:
-        example: [ editor ]
-    name: "${{ matrix.example }}"
+        package:
+          - dart_package_template/example/basic
+          - dart_package_template/example/advanced_example
+          - flutter_package/example/basic
+          - flutter_package/example/advanced_example
     uses: ./.github/workflows/_base-flutter.yaml
     with:
-      path: "example/${{ matrix.example }}"
+      path: "packages/${{ matrix.package }}"
+
+  force-sdk-flutter:
+    strategy:
+      matrix:
+        package:
+          - flutter_package/example/basic
+          - flutter_package/example/advanced_example
+    uses: ./.github/workflows/_base-flutter.yaml
+    with:
+      path: "packages/${{ matrix.package }}"
+      force-sdk: "flutter"
+
+  force-sdk-dart:
+    strategy:
+      matrix:
+        package:
+          - dart_package_template/example/basic
+          - dart_package_template/example/advanced_example
+    uses: ./.github/workflows/_base-flutter.yaml
+    with:
+      path: "packages/${{ matrix.package }}"
+      force-sdk: "dart"
+
+  branch-sdk-flutter:
+    strategy:
+      matrix:
+        package:
+          - flutter_package/example/basic
+          - flutter_package/example/advanced_example
+    uses: ./.github/workflows/_base-flutter.yaml
+    with:
+      path: "packages/${{ matrix.package }}"
+      sdk-branch: "beta"
+
+  branch-sdk-dart:
+    strategy:
+      matrix:
+        package:
+          - dart_package_template/example/basic
+          - dart_package_template/example/advanced_example
+    uses: ./.github/workflows/_base-flutter.yaml
+    with:
+      path: "packages/${{ matrix.package }}"
+      sdk-branch: "beta"
+
+  version-sdk-flutter:
+    strategy:
+      matrix:
+        package:
+          - flutter_package/example/basic
+          - flutter_package/example/advanced_example
+    uses: ./.github/workflows/_base-flutter.yaml
+    with:
+      path: "packages/${{ matrix.package }}"
+      sdk-version: "3.38.5"
+
+  version-sdk-dart:
+    strategy:
+      matrix:
+        package:
+          - dart_package_template/example/basic
+          - dart_package_template/example/advanced_example
+    uses: ./.github/workflows/_base-flutter.yaml
+    with:
+      path: "packages/${{ matrix.package }}"
+      sdk-version: "3.10.1"

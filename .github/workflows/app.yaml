@@ -1,4 +1,4 @@
-name: "package"
+name: "app"
 
 on:
   schedule:
@@ -13,7 +13,7 @@ on:
       - "**.dart"
       - "./*.yaml"
       - .github/workflows/_base*.yaml
-      - .github/workflows/package.yaml
+      - .github/workflows/app.yaml
 
 # call the base workflow with the package path
 jobs:
@@ -21,8 +21,8 @@ jobs:
     strategy:
       matrix:
         package:
-          - dart_package_template
-          - flutter_package
+          - dart_app
+          - flutter_app
     uses: ./.github/workflows/_base-flutter.yaml
     with:
       path: "packages/${{ matrix.package }}"
@@ -31,7 +31,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - flutter_package
+          - flutter_app
     uses: ./.github/workflows/_base-flutter.yaml
     with:
       path: "packages/${{ matrix.package }}"
@@ -41,7 +41,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - dart_package_template
+          - dart_app
     uses: ./.github/workflows/_base-flutter.yaml
     with:
       path: "packages/${{ matrix.package }}"
@@ -51,7 +51,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - flutter_package
+          - flutter_app
     uses: ./.github/workflows/_base-flutter.yaml
     with:
       path: "packages/${{ matrix.package }}"
@@ -61,7 +61,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - dart_package_template
+          - dart_app
     uses: ./.github/workflows/_base-flutter.yaml
     with:
       path: "packages/${{ matrix.package }}"
@@ -71,7 +71,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - flutter_package
+          - flutter_app
     uses: ./.github/workflows/_base-flutter.yaml
     with:
       path: "packages/${{ matrix.package }}"
@@ -81,7 +81,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - dart_package_template
+          - dart_app
     uses: ./.github/workflows/_base-flutter.yaml
     with:
       path: "packages/${{ matrix.package }}"
