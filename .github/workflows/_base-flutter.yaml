@@ -158,8 +158,8 @@ jobs:
 
       - name: Run analysis
         run: |
-          - if [ -d "./lib" ]; then ${{ needs.checks.outputs.sdk }} analyze --fatal-warnings ./lib/**.dart; else ${{ needs.checks.outputs.sdk }} analyze --fatal-warnings .; fi
-          - if [ -d "./bin" ]; then ${{ needs.checks.outputs.sdk }} analyze --fatal-warnings ./bin/**.dart; else ${{ needs.checks.outputs.sdk }} analyze --fatal-warnings .; fi
+          if [ -d "./lib" ]; then ${{ needs.checks.outputs.sdk }} analyze --fatal-warnings ./lib/**.dart; fi
+          if [ -d "./bin" ]; then ${{ needs.checks.outputs.sdk }} analyze --fatal-warnings ./bin/**.dart; fi
         working-directory: ${{ inputs.path }}
 
   test:
@@ -186,7 +186,7 @@ jobs:
         working-directory: ${{ inputs.path }}
 
       - name: Run tests
-        run: ${{ needs.checks.outputs.sdk }} test --reporter=expanded test/*.dart
+        run: ${{ needs.checks.outputs.sdk }} test --reporter=expanded ./test/**.dart
         working-directory: ${{ inputs.path }}
 
   publish-dry-run:
