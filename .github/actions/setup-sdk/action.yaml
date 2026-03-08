@@ -17,6 +17,10 @@ inputs:
     required: false
     description: "Whether to enable caching for the SDK"
     default: "true"
+  publish:
+    required: false
+    description: "Whether this setup is for a publish workflow (disables caching and other optimizations)"
+    default: "false"
 outputs:
   sdk-version:
     description: "The version of the SDK that was set up"
@@ -61,7 +65,7 @@ runs:
       with:
         channel: ${{ inputs.sdk-version && 'any' || inputs.sdk-branch }}
         flutter-version: ${{ inputs.sdk-version }}
-        cache: ${{ inputs.cache }}
+        cache: ${{ inputs.cache == 'true' && inputs.publish != 'true' }}
 
     - name: dart
       uses: dart-lang/setup-dart@v1

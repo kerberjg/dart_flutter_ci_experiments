@@ -23,29 +23,44 @@ jobs:
         package:
           - dart_app
           - flutter_app
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
     uses: ./.github/workflows/_base-flutter.yaml
     with:
       path: "packages/${{ matrix.package }}"
+      os: ${{ matrix.os }}
 
   force-sdk-flutter:
     strategy:
       matrix:
         package:
           - flutter_app
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
     uses: ./.github/workflows/_base-flutter.yaml
     with:
       path: "packages/${{ matrix.package }}"
       force-sdk: "flutter"
+      os: ${{ matrix.os }}
 
   force-sdk-dart:
     strategy:
       matrix:
         package:
           - dart_app
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
     uses: ./.github/workflows/_base-flutter.yaml
     with:
       path: "packages/${{ matrix.package }}"
       force-sdk: "dart"
+      os: ${{ matrix.os }}
 
   branch-sdk-flutter:
     strategy:
@@ -72,6 +87,10 @@ jobs:
       matrix:
         package:
           - flutter_app
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
     uses: ./.github/workflows/_base-flutter.yaml
     with:
       path: "packages/${{ matrix.package }}"
@@ -82,6 +101,10 @@ jobs:
       matrix:
         package:
           - dart_app
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
     uses: ./.github/workflows/_base-flutter.yaml
     with:
       path: "packages/${{ matrix.package }}"
