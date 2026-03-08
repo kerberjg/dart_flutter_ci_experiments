@@ -1,0 +1,99 @@
+name: Setup SDK
+description: Setup Dart or Flutter SDK based on parameter
+
+inputs:
+  sdk:
+    required: true
+    description: 'SDK to setup: "dart" or "flutter" (defaults to Flutter)'
+    default: "flutter"
+  sdk-version:
+    required: false
+    description: "SDK version to setup"
+  sdk-branch:
+    required: false
+    description: "SDK branch to setup"
+    default: "stable"
+  cache:
+    required: false
+    description: "Whether to enable caching for the SDK"
+    default: "true"
+outputs:
+  sdk-version:
+    description: "The version of the SDK that was set up"
+    value: ${{ steps.version.outputs.sdk_version }}
+  sdk-branch:
+    description: "The branch of the SDK that was set up"
+    value: ${{ steps.version.outputs.sdk_branch }}
+  sdk-path:
+    description: "The path to the SDK that was set up"
+    value: ${{ steps.version.outputs.sdk_path }}
+  pub-path:
+    description: "The path to the pub cache"
+    value: ${{ steps.version.outputs.pub_path }}
+
+runs:
+  using: composite
+  steps:
+    - name: warnings
+      shell: bash
+      run: |
+        # SDK: must be flutter or dart
+        if [ "${{ inputs.sdk }}" != "flutter" ] && [ "${{ inputs.sdk }}" != "dart" ]; then
+          echo "Error: sdk input must be 'flutter' or 'dart'."
+          exit 1
+        fi
+        # Dart: both version and branch set - precedence
+        if [ "${{ inputs.sdk }}" == "dart" ] && [ -n "${{ inputs.sdk-version }}" ] && [ -n "${{ inputs.sdk-branch }}" ]; then
+          echo "Warning: Both sdk-version and sdk-branch are set. sdk-version will take precedence."
+        fi
+        # Flutter: both version and custom branch set - precedence
+        if [ "${{ inputs.sdk }}" == "flutter" ] && [ -n "${{ inputs.sdk-version }}" ] && [ "${{ inputs.sdk-branch }}" != "stable" ]; then
+          echo "Warning: Both sdk-version and sdk-branch are set. sdk-version will take precedence."
+        fi
+        # Dart: Caching not supported
+        if [ "${{ inputs.sdk }}" == "dart" ] && [ "${{ inputs.cache }}" == "true" ]; then
+          echo "Warning: Caching is not supported for Dart SDK. Ignoring cache input."
+        fi
+
+    - name: flutter
+      uses: subosito/flutter-action@v2
+      if: inputs.sdk == 'flutter'
+      with:
+        channel: ${{ inputs.sdk-version && 'any' || inputs.sdk-branch }}
+        flutter-version: ${{ inputs.sdk-version }}
+        cache: ${{ inputs.cache }}
+
+    - name: dart
+      uses: dart-lang/setup-dart@v1
+      if: inputs.sdk == 'dart'
+      with:
+        sdk: ${{ inputs.sdk-version || inputs.sdk-branch }}
+
+    - name: version
+      shell: bash
+      run: |
+        # Save outputs
+        if [ "${{ inputs.sdk }}" == "flutter" ]; then
+          sdk_version=$(flutter --version --machine | jq -r '.flutterVersion')
+          sdk_branch=$(flutter --version --machine | jq -r '.channel')
+          sdk_path=$(which flutter)
+          pub_path="${{ steps.flutter.outputs.PUB-CACHE-PATH }}"
+        elif [ "${{ inputs.sdk }}" == "dart" ]; then
+          sdk_version=$(dart --version 2>&1 | awk '{sub(/.*version: /,""); sub(/\(.*/,""); gsub(/[[:space:]]+$/,""); print}')
+          sdk_branch=$(dart --version 2>&1 | awk 'match($0, /\([^)]*\)/) { print substr($0, RSTART+1, RLENGTH-2) }')
+          sdk_path=$(which dart)
+          pub_path="$PUB_CACHE"
+        fi
+
+        # Print outputs
+        echo "SDK: ${{ inputs.sdk }}"
+        echo "Version: $sdk_version"
+        echo "Branch: $sdk_branch"
+        echo "Path: $sdk_path"
+        echo "Pub Path: $pub_path"
+
+        # Set outputs
+        echo "sdk_version=$sdk_version" >> $GITHUB_OUTPUT
+        echo "sdk_branch=$sdk_branch" >> $GITHUB_OUTPUT
+        echo "sdk_path=$sdk_path" >> $GITHUB_OUTPUT
+        echo "pub_path=$pub_path" >> $GITHUB_OUTPUT

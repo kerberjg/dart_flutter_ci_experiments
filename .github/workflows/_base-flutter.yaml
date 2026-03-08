@@ -85,17 +85,12 @@ jobs:
     needs: [checks]
     steps:
       - uses: actions/checkout@v5
-      - uses: subosito/flutter-action@v2
-        if: needs.checks.outputs.sdk == 'flutter'
+      - uses: ./.github/actions/setup-sdk
         with:
-          channel: ${{ inputs.sdk-version && 'any' || inputs.sdk-branch }}
-          flutter-version: ${{ inputs.sdk-version }}
-          cache: true
-
-      - uses: dart-lang/setup-dart@v1
-        if: needs.checks.outputs.sdk == 'dart'
-        with:
-          sdk: ${{ inputs.sdk-version || inputs.sdk-branch }}
+          sdk: ${{ needs.checks.outputs.sdk }}
+          sdk-version: ${{ inputs.sdk-version }}
+          sdk-branch: ${{ inputs.sdk-branch }}
+          cache: ${{ needs.checks.outputs.sdk == 'flutter' }}
 
       - name: "Get dependencies"
         run: ${{ needs.checks.outputs.sdk }} pub get
@@ -108,17 +103,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-      - uses: subosito/flutter-action@v2
-        if: needs.checks.outputs.sdk == 'flutter'
+      - uses: ./.github/actions/setup-sdk
         with:
-          channel: ${{ inputs.sdk-version && 'any' || inputs.sdk-branch }}
-          flutter-version: ${{ inputs.sdk-version }}
-          cache: true
-
-      - uses: dart-lang/setup-dart@v1
-        if: needs.checks.outputs.sdk == 'dart'
-        with:
-          sdk: ${{ inputs.sdk-version || inputs.sdk-branch }}
+          sdk: ${{ needs.checks.outputs.sdk }}
+          sdk-version: ${{ inputs.sdk-version }}
+          sdk-branch: ${{ inputs.sdk-branch }}
+          cache: ${{ needs.checks.outputs.sdk == 'flutter' }}
 
       - name: "Get dependencies"
         run: ${{ needs.checks.outputs.sdk }} pub get
@@ -140,17 +130,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-      - uses: subosito/flutter-action@v2
-        if: needs.checks.outputs.sdk == 'flutter'
+      - uses: ./.github/actions/setup-sdk
         with:
-          channel: ${{ inputs.sdk-version && 'any' || inputs.sdk-branch }}
-          flutter-version: ${{ inputs.sdk-version }}
-          cache: true
-
-      - uses: dart-lang/setup-dart@v1
-        if: needs.checks.outputs.sdk == 'dart'
-        with:
-          sdk: ${{ inputs.sdk-version || inputs.sdk-branch }}
+          sdk: ${{ needs.checks.outputs.sdk }}
+          sdk-version: ${{ inputs.sdk-version }}
+          sdk-branch: ${{ inputs.sdk-branch }}
+          cache: ${{ needs.checks.outputs.sdk == 'flutter' }}
 
       - name: "Get dependencies"
         run: ${{ needs.checks.outputs.sdk }} pub get
@@ -169,17 +154,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-      - uses: subosito/flutter-action@v2
-        if: needs.checks.outputs.sdk == 'flutter'
+      - uses: ./.github/actions/setup-sdk
         with:
-          channel: ${{ inputs.sdk-version && 'any' || inputs.sdk-branch }}
-          flutter-version: ${{ inputs.sdk-version }}
-          cache: true
-
-      - uses: dart-lang/setup-dart@v1
-        if: needs.checks.outputs.sdk == 'dart'
-        with:
-          sdk: ${{ inputs.sdk-version || inputs.sdk-branch }}
+          sdk: ${{ needs.checks.outputs.sdk }}
+          sdk-version: ${{ inputs.sdk-version }}
+          sdk-branch: ${{ inputs.sdk-branch }}
+          cache: ${{ needs.checks.outputs.sdk == 'flutter' }}
 
       - name: "Get dependencies"
         run: ${{ needs.checks.outputs.sdk }} pub get
@@ -197,17 +177,12 @@ jobs:
     # if: ${{ needs.checks.outputs.do_publish == 1 && (github.event_name == 'release' && github.event.action == 'published' || github.ref == 'refs/heads/main') }}
     steps:
       - uses: actions/checkout@v5
-      - uses: subosito/flutter-action@v2
-        if: needs.checks.outputs.sdk == 'flutter'
+      - uses: ./.github/actions/setup-sdk
         with:
-          channel: ${{ inputs.sdk-version && 'any' || inputs.sdk-branch }}
-          flutter-version: ${{ inputs.sdk-version }}
-          cache: true
-
-      - uses: dart-lang/setup-dart@v1
-        if: needs.checks.outputs.sdk == 'dart'
-        with:
-          sdk: ${{ inputs.sdk-version || inputs.sdk-branch }}
+          sdk: ${{ needs.checks.outputs.sdk }}
+          sdk-version: ${{ inputs.sdk-version }}
+          sdk-branch: ${{ inputs.sdk-branch }}
+          cache: ${{ needs.checks.outputs.sdk == 'flutter' }}
 
       - name: "Get dependencies"
         run: ${{ needs.checks.outputs.sdk }} pub get
