@@ -12,7 +12,7 @@ on:
     paths:
       - "**.dart"
       - "./*.yaml"
-      - .github/workflows/_base*.yaml
+      - .github/workflows/pipeline.yaml
       - .github/workflows/example.yaml
 
 # call the base workflow with the package path
@@ -25,7 +25,7 @@ jobs:
           - dart_package_template/example/advanced_example
           - flutter_package/example/basic
           - flutter_package/example/advanced_example
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
 
@@ -35,7 +35,7 @@ jobs:
         package:
           - flutter_package/example/basic
           - flutter_package/example/advanced_example
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       force-sdk: "flutter"
@@ -46,7 +46,7 @@ jobs:
         package:
           - dart_package_template/example/basic
           - dart_package_template/example/advanced_example
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       force-sdk: "dart"
@@ -57,7 +57,7 @@ jobs:
         package:
           - flutter_package/example/basic
           - flutter_package/example/advanced_example
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       sdk-branch: "beta"
@@ -68,7 +68,7 @@ jobs:
         package:
           - dart_package_template/example/basic
           - dart_package_template/example/advanced_example
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       sdk-branch: "beta"
@@ -79,7 +79,7 @@ jobs:
         package:
           - flutter_package/example/basic
           - flutter_package/example/advanced_example
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       sdk-version: "3.38.5"
@@ -90,7 +90,7 @@ jobs:
         package:
           - dart_package_template/example/basic
           - dart_package_template/example/advanced_example
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       sdk-version: "3.10.1"

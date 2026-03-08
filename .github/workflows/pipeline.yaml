@@ -1,4 +1,4 @@
-name: "[base] Flutter"
+name: "Flutter/Dart CI Pipeline"
 
 on:
   workflow_call:
@@ -96,7 +96,7 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@v5
-      - uses: ./.github/actions/setup-sdk
+      - uses: kerberjg/dart_flutter_ci_experiments/.github/actions/setup-sdk@main
         with:
           sdk: ${{ needs.checks.outputs.sdk }}
           sdk-version: ${{ inputs.sdk-version }}
@@ -117,7 +117,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-      - uses: ./.github/actions/setup-sdk
+      - uses: kerberjg/dart_flutter_ci_experiments/.github/actions/setup-sdk@main
         with:
           sdk: ${{ needs.checks.outputs.sdk }}
           sdk-version: ${{ inputs.sdk-version }}
@@ -147,7 +147,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-      - uses: ./.github/actions/setup-sdk
+      - uses: kerberjg/dart_flutter_ci_experiments/.github/actions/setup-sdk@main
         with:
           sdk: ${{ needs.checks.outputs.sdk }}
           sdk-version: ${{ inputs.sdk-version }}
@@ -174,7 +174,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-      - uses: ./.github/actions/setup-sdk
+      - uses: kerberjg/dart_flutter_ci_experiments/.github/actions/setup-sdk@main
         with:
           sdk: ${{ needs.checks.outputs.sdk }}
           sdk-version: ${{ inputs.sdk-version }}
@@ -200,7 +200,7 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@v5
-      - uses: ./.github/actions/setup-sdk
+      - uses: kerberjg/dart_flutter_ci_experiments/.github/actions/setup-sdk@main
         with:
           sdk: ${{ needs.checks.outputs.sdk }}
           sdk-version: ${{ inputs.sdk-version }}

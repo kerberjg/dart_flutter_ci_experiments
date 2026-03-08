@@ -12,7 +12,7 @@ on:
     paths:
       - "**.dart"
       - "./*.yaml"
-      - .github/workflows/_base*.yaml
+      - .github/workflows/pipeline.yaml
       - .github/workflows/package.yaml
 
 # call the base workflow with the package path
@@ -23,7 +23,7 @@ jobs:
         package:
           - dart_package_template
           - flutter_package
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
 
@@ -32,7 +32,7 @@ jobs:
       matrix:
         package:
           - flutter_package
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       force-sdk: "flutter"
@@ -42,7 +42,7 @@ jobs:
       matrix:
         package:
           - dart_package_template
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       force-sdk: "dart"
@@ -52,7 +52,7 @@ jobs:
       matrix:
         package:
           - flutter_package
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       sdk-branch: "beta"
@@ -62,7 +62,7 @@ jobs:
       matrix:
         package:
           - dart_package_template
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       sdk-branch: "beta"
@@ -72,7 +72,7 @@ jobs:
       matrix:
         package:
           - flutter_package
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       sdk-version: "3.38.5"
@@ -82,7 +82,7 @@ jobs:
       matrix:
         package:
           - dart_package_template
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       sdk-version: "3.10.1"

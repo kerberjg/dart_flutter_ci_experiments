@@ -12,7 +12,7 @@ on:
     paths:
       - "**.dart"
       - "./*.yaml"
-      - .github/workflows/_base*.yaml
+      - .github/workflows/pipeline.yaml
       - .github/workflows/app.yaml
 
 # call the base workflow with the package path
@@ -27,7 +27,7 @@ jobs:
           - ubuntu-latest
           - windows-latest
           - macos-latest
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       os: ${{ matrix.os }}
@@ -41,7 +41,7 @@ jobs:
           - ubuntu-latest
           - windows-latest
           - macos-latest
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       force-sdk: "flutter"
@@ -56,7 +56,7 @@ jobs:
           - ubuntu-latest
           - windows-latest
           - macos-latest
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       force-sdk: "dart"
@@ -67,7 +67,7 @@ jobs:
       matrix:
         package:
           - flutter_app
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       sdk-branch: "beta"
@@ -77,7 +77,7 @@ jobs:
       matrix:
         package:
           - dart_app
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       sdk-branch: "beta"
@@ -91,7 +91,7 @@ jobs:
           - ubuntu-latest
           - windows-latest
           - macos-latest
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       sdk-version: "3.38.5"
@@ -105,7 +105,7 @@ jobs:
           - ubuntu-latest
           - windows-latest
           - macos-latest
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       sdk-version: "3.10.1"

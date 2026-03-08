@@ -12,12 +12,12 @@ on:
     paths:
       - "**.dart"
       - "./*.yaml"
-      - .github/workflows/_base*.yaml
+      - .github/workflows/pipeline.yaml
       - .github/workflows/single.yaml
 
 # call the base workflow with the package path
 jobs:
   dart_package:
-    uses: ./.github/workflows/_base-flutter.yaml
+    uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/dart_package_template"
