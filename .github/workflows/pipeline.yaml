@@ -158,6 +158,11 @@ jobs:
         run: ${{ needs.checks.outputs.sdk }} pub get
         working-directory: ${{ inputs.path }}
 
+      - name: Run codegen
+        if: needs.checks.outputs.do_codegen == 1
+        run: ${{ needs.checks.outputs.sdk }} pub run build_runner build --delete-conflicting-outputs
+        working-directory: ${{ inputs.path }}
+
       - name: Run analysis
         run: |
           if [ -d "./lib" ]; then ${{ needs.checks.outputs.sdk }} analyze --fatal-warnings ./lib/; fi
@@ -185,6 +190,11 @@ jobs:
         run: ${{ needs.checks.outputs.sdk }} pub get
         working-directory: ${{ inputs.path }}
 
+      - name: Run codegen
+        if: needs.checks.outputs.do_codegen == 1
+        run: ${{ needs.checks.outputs.sdk }} pub run build_runner build --delete-conflicting-outputs
+        working-directory: ${{ inputs.path }}
+
       - name: Run tests
         run: ${{ needs.checks.outputs.sdk }} test --reporter=expanded ./test/
         working-directory: ${{ inputs.path }}
@@ -209,6 +219,11 @@ jobs:
 
       - name: "Get dependencies"
         run: ${{ needs.checks.outputs.sdk }} pub get
+        working-directory: ${{ inputs.path }}
+
+      - name: Run codegen
+        if: needs.checks.outputs.do_codegen == 1
+        run: ${{ needs.checks.outputs.sdk }} pub run build_runner build --delete-conflicting-outputs
         working-directory: ${{ inputs.path }}
 
       - name: Publish to pub.dev (dry run)
