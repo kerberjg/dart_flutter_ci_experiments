@@ -1,0 +1,44 @@
+name: "app-multi-os-arch"
+
+on:
+  schedule:
+    - cron: "0 12 * * 3"
+  pull_request:
+  push:
+    branches:
+      - main
+      - develop
+      - "release/**"
+    paths:
+      - "**.dart"
+      - "./*.yaml"
+      - .github/workflows/_base*.yaml
+      - .github/workflows/app-multi-os-arch.yaml
+
+# call the base workflow with the package path
+jobs:
+  run:
+    strategy:
+      matrix:
+        package:
+          - flutter_app
+          - dart_app
+        os:
+          # x64
+          - ubuntu-24.04
+          - ubuntu-22.04
+          - windows-2025
+          - windows-2022
+          - macos-26-intel
+          - macos-15-intel
+          # arm64
+          - ubuntu-24.04-arm
+          - ubuntu-22.04-arm
+          - windows-11-arm
+          #  (no windows-10-arm available)
+          - macos-26
+          - macos-15
+    uses: ./.github/workflows/_base-flutter.yaml
+    with:
+      path: "packages/${{ matrix.package }}"
+      os: ${{ matrix.os }}
