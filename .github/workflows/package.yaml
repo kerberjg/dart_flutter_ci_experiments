@@ -26,6 +26,7 @@ jobs:
     uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
+      min-publish-score: 160
 
   force-sdk-flutter:
     strategy:
@@ -36,6 +37,7 @@ jobs:
     with:
       path: "packages/${{ matrix.package }}"
       force-sdk: "flutter"
+      min-publish-score: 160
 
   force-sdk-dart:
     strategy:
@@ -46,6 +48,7 @@ jobs:
     with:
       path: "packages/${{ matrix.package }}"
       force-sdk: "dart"
+      min-publish-score: 160
 
   branch-sdk-flutter:
     strategy:
@@ -56,6 +59,7 @@ jobs:
     with:
       path: "packages/${{ matrix.package }}"
       sdk-branch: "beta"
+      min-publish-score: 160
 
   branch-sdk-dart:
     strategy:
@@ -66,6 +70,7 @@ jobs:
     with:
       path: "packages/${{ matrix.package }}"
       sdk-branch: "beta"
+      min-publish-score: 160
 
   version-sdk-flutter:
     strategy:
@@ -76,6 +81,7 @@ jobs:
     with:
       path: "packages/${{ matrix.package }}"
       sdk-version: "3.38.5"
+      min-publish-score: 160
 
   version-sdk-dart:
     strategy:
@@ -86,3 +92,4 @@ jobs:
     with:
       path: "packages/${{ matrix.package }}"
       sdk-version: "3.10.1"
+      min-publish-score: 160
