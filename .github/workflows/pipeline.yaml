@@ -23,6 +23,11 @@ on:
         type: string
         default: "ubuntu-latest"
         description: "The OS to run the workflow on. Can be overridden by the caller workflow for testing purposes."
+      min-publish-score:
+        required: false
+        type: number
+        default: 0
+        description: "Minimum publish score required to pass the publish step. Set to 0 to disable publish score check."
 
 jobs:
   checks:
@@ -228,4 +233,19 @@ jobs:
 
       - name: Publish to pub.dev (dry run)
         run: ${{ needs.checks.outputs.sdk }} pub publish --dry-run
+        working-directory: ${{ inputs.path }}
+
+      - name: Run Pana ("server-side" analysis used by pub.dev)
+        if: inputs.min-publish-score > 0
+        run: |
+          # Install pana globally
+          ${{ needs.checks.outputs.sdk }} pub global activate pana
+          # Run pana and extract the overall score
+          PANA=$(pana -j . 2> /dev/null);
+          PANA_SCORE=$(echo $PANA | jq -r 'select(has("scores")) | .scores.grantedPoints');
+          PANA_MAX_SCORE=$(echo $PANA | jq -r 'select(has("scores")) | .scores.maxPoints');
+          PANA_SUMMARY=$(echo $PANA | jq -r 'select(has("report")) | .report.sections[].summary');
+          echo "Score: $PANA_SCORE/$PANA_MAX_SCORE (minimum required: ${{inputs.min-publish-score}})"
+          echo -e "\n$PANA_SUMMARY"
+          if (( $PANA_SCORE < ${{inputs.min-publish-score}} )); then echo -e "\n\nThe minimum score was not met!"; exit 1; fi
         working-directory: ${{ inputs.path }}

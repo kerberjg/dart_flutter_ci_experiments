@@ -21,3 +21,4 @@ jobs:
     uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/dart_package_template"
+      min-publish-score: 160
