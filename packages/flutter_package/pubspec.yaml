@@ -1,5 +1,5 @@
 name: flutter_package
-description: "A new Flutter package project."
+description: A new Flutter package project - meant to test CI workflows for Flutter packages.
 version: 0.0.1
 repository: https://github.com/kerberjg/dart_flutter_ci_experiments
 

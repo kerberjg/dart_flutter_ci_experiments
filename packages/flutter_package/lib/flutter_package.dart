@@ -1,9 +1,13 @@
+/// A Flutter package example.
+library;
+
 import 'package:flutter/material.dart';
 
 /// An example widget.
 ///
 /// Drop this into a Flutter app to verify the package wiring works.
 class ExampleWidget extends StatefulWidget {
+  /// Creates an [ExampleWidget].
   const ExampleWidget({super.key});
 
   @override
