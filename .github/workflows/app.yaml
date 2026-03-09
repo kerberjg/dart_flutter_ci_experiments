@@ -95,6 +95,7 @@ jobs:
     with:
       path: "packages/${{ matrix.package }}"
       sdk-version: "3.38.5"
+      os: ${{ matrix.os }}
 
   version-sdk-dart:
     strategy:
@@ -109,3 +110,4 @@ jobs:
     with:
       path: "packages/${{ matrix.package }}"
       sdk-version: "3.10.1"
+      os: ${{ matrix.os }}
