@@ -1,0 +1,16 @@
+name: dart_codegen
+description: Example for crystallis
+version: 0.0.4
+
+publish_to: "none"
+
+environment:
+  sdk: ">=3.6.0 <4.0.0"
+
+dependencies:
+  crystallis: 0.0.4
+
+dev_dependencies:
+  crystallis_generator: 0.0.4
+  lints: ^6.0.0
+  build_runner: ^2.10.5

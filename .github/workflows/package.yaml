@@ -23,6 +23,7 @@ jobs:
         package:
           - dart_package_template
           - flutter_package
+          - dart_codegen
     uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
@@ -44,6 +45,7 @@ jobs:
       matrix:
         package:
           - dart_package_template
+          - dart_codegen
     uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
@@ -66,6 +68,7 @@ jobs:
       matrix:
         package:
           - dart_package_template
+          - dart_codegen
     uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
@@ -88,6 +91,7 @@ jobs:
       matrix:
         package:
           - dart_package_template
+          - dart_codegen
     uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
