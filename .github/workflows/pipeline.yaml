@@ -28,6 +28,11 @@ on:
         type: number
         default: 0
         description: "Minimum publish score required to pass the publish step. Set to 0 to disable publish score check."
+      skip-publish:
+        required: false
+        type: boolean
+        default: false
+        description: "Whether to skip the publish step entirely, even the dry run. Useful for packages that are not meant to be published, or to speed up CI when publish checks are not needed."
 
 jobs:
   checks:
@@ -82,14 +87,19 @@ jobs:
       # Skip if `publish_to` is set to `none`
       - id: check-publish
         run: |
+
+          if [ "${{ inputs.skip-publish }}" = "true" ]; then
+            echo "skip-publish input is true, skipping publish step.";
+            do_publish=0
           # accept both `publish_to: none`, `publish_to: 'none'`, and `publish_to: "none"`
-          if [ -f "${{ inputs.path }}/pubspec.yaml" ] && grep -Eq "publish_to:[[:space:]]?(['\"]?)?none\1" "${{ inputs.path }}/pubspec.yaml"; then
+          elif [ -f "${{ inputs.path }}/pubspec.yaml" ] && grep -Eq "publish_to:[[:space:]]?(['\"]?)?none\1" "${{ inputs.path }}/pubspec.yaml"; then
             echo "Skipping publish step.";
             do_publish=0
           else
             echo "Running publish step.";
             do_publish=1
           fi
+
           echo "do_publish=$do_publish" >> $GITHUB_OUTPUT
 
   install:
