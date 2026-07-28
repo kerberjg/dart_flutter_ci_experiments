@@ -12,6 +12,14 @@
 # The core lints are also what is used by pub.dev for scoring packages.
 
 analyzer:
+  exclude:
+    - "build/**"
+    - "ios/**"
+    - "android/**"
+    - "web/**"
+    - "macos/**"
+    - "windows/**"
+    - "linux/**"
   errors:
     unnecessary_this: ignore
 include:

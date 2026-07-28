@@ -2,7 +2,13 @@ include: package:lints/recommended.yaml
 
 analyzer:
   exclude:
-    - build/**
+    - "build/**"
+    - "ios/**"
+    - "android/**"
+    - "web/**"
+    - "macos/**"
+    - "windows/**"
+    - "linux/**"
     - lib/**.g.dart
   strong-mode:
     implicit-casts: false
