@@ -246,8 +246,9 @@ jobs:
 
   # Workflow calls itself for each example
   examples:
+    name: "examples"
     needs: [install, analyze, checks]
-    if: needs.checks.outputs.examples != '{}' && inputs.skip-examples != 'true'
+    if: ${{ needs.checks.outputs.examples != '{}' && inputs.skip-examples != 'true' }}
     strategy:
       matrix:
         example: ${{ fromJSON(needs.checks.outputs.examples) }}
