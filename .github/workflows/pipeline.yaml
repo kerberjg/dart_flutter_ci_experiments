@@ -33,6 +33,11 @@ on:
         type: boolean
         default: false
         description: "Whether to skip the publish step entirely, even the dry run. Useful for packages that are not meant to be published, or to speed up CI when publish checks are not needed."
+      skip-examples:
+        required: false
+        type: boolean
+        default: false
+        description: "Whether to skip the example directory entirely. Useful for packages that do not have an example, or to speed up CI when example checks are not needed."
 
 jobs:
   checks:
@@ -43,6 +48,7 @@ jobs:
       do_tests: ${{ steps.check-tests.outputs.do_tests }}
       do_codegen: ${{ steps.check-codegen.outputs.do_codegen }}
       do_publish: ${{ steps.check-publish.outputs.do_publish }}
+      examples: ${{ steps.check-examples.outputs.examples }}
     defaults:
       run:
         shell: bash
@@ -101,7 +107,31 @@ jobs:
           fi
 
           echo "do_publish=$do_publish" >> $GITHUB_OUTPUT
+      # Get the list of examples in the `example` directory, if it exists
+      - id: check-examples
+        run: |
+          examples=""
 
+          if [ -d "${{ inputs.path }}/example" ]; then
+            if [ -f "${{ inputs.path }}/example/pubspec.yaml" ]; then
+              examples="${{ inputs.path }}/example"
+            else
+              for example in "${{ inputs.path }}/example"/*; do
+                if [ -f "$example/pubspec.yaml" ]; then
+                  examples="$examples $example"
+                fi
+              done
+            fi
+          fi
+
+          # Format list as JSON ({ name1: path1, name2: path2, ... })
+          examples_json="{"
+          for example in $examples; do
+            example_name=$(basename "$example")
+            examples_json="$examples_json\"$example_name\":\"$example\","
+          done
+          examples_json="${examples_json%,}}"
+          echo "examples=$examples_json" >> $GITHUB_OUTPUT
   install:
     name: "install"
     runs-on: ${{ inputs.os }}
@@ -213,6 +243,24 @@ jobs:
       - name: Run tests
         run: ${{ needs.checks.outputs.sdk }} test --reporter=expanded ./test/
         working-directory: ${{ inputs.path }}
+
+  # Workflow calls itself for each example
+  examples:
+    needs: [install, analyze, checks]
+    if: needs.checks.outputs.examples != '{}' && inputs.skip-examples != 'true'
+    strategy:
+      matrix:
+        example: ${{ fromJSON(needs.checks.outputs.examples) }}
+    uses: ./.github/workflows/pipeline.yaml
+    with:
+      path: ${{ matrix.example }}
+      sdk-branch: ${{ inputs.sdk-branch }}
+      sdk-version: ${{ inputs.sdk-version }}
+      force-sdk: ${{ inputs.force-sdk }}
+      os: ${{ inputs.os }}
+      min-publish-score: 0
+      skip-publish: true # Don't publish examples, just run the dry run
+      skip-examples: true # Don't recurse into examples of examples
 
   publish-dry-run:
     runs-on: ${{ inputs.os }}
