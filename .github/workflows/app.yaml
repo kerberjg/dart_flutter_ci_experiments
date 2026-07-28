@@ -25,6 +25,7 @@ jobs:
           - flutter_app
         os:
           - ubuntu-latest
+          - windows-latest
           - macos-latest
     uses: ./.github/workflows/pipeline.yaml
     with:
@@ -38,6 +39,7 @@ jobs:
           - flutter_app
         os:
           - ubuntu-latest
+          - windows-latest
           - macos-latest
     uses: ./.github/workflows/pipeline.yaml
     with:
@@ -52,6 +54,7 @@ jobs:
           - dart_app
         os:
           - ubuntu-latest
+          - windows-latest
           - macos-latest
     uses: ./.github/workflows/pipeline.yaml
     with:
@@ -86,11 +89,13 @@ jobs:
           - flutter_app
         os:
           - ubuntu-latest
+          - windows-latest
           - macos-latest
     uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       sdk-version: "3.38.5"
+      os: ${{ matrix.os }}
 
   version-sdk-dart:
     strategy:
@@ -99,8 +104,10 @@ jobs:
           - dart_app
         os:
           - ubuntu-latest
+          - windows-latest
           - macos-latest
     uses: ./.github/workflows/pipeline.yaml
     with:
       path: "packages/${{ matrix.package }}"
       sdk-version: "3.10.1"
+      os: ${{ matrix.os }}
