@@ -1,2 +1,2 @@
-# dart_flutter_ci_experiments
-Experimental repo to test Dart&amp;Flutter CI
+# dart_flutter_ci
+Dart&Flutter GitHub Actions CI workflows
