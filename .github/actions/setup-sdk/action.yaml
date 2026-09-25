@@ -68,10 +68,12 @@ runs:
         cache: ${{ inputs.cache == 'true' && inputs.publish != 'true' }}
 
     - name: dart
-      uses: dart-lang/setup-dart@v1
+      uses: dart-lang/setup-dart@v1.8.0
       if: inputs.sdk == 'dart'
       with:
         sdk: ${{ inputs.sdk-version || inputs.sdk-branch }}
+        # TODO(kerberjg)[depends=dart-lang/setup-dart#198]: Remove this once the issue is fixed
+        problem-matcher: false
 
     - name: version
       shell: bash
